@@ -10,15 +10,14 @@ TARGET="core/class/commoninvoice.class.php"
 cd "$ROOT"
 [ -f "$TARGET" ] || { echo "Introuvable : $ROOT/$TARGET"; exit 1; }
 
-if grep -q "PATCH MURBANISME-RENT" "$TARGET"; then
+if grep -q "INVOICE_CAN_ALWAYS_BE_REMOVED" "$TARGET"; then
 	echo "Déjà appliqué ($TARGET)."
-	exit 0
+else
+	cp -a "$TARGET" "$TARGET.bak-mondoly-$(date +%Y%m%d%H%M%S)"
+	patch -p1 --forward < "$PATCH_FILE"
+	if command -v php >/dev/null; then php -l "$TARGET"; fi
 fi
 
-cp -a "$TARGET" "$TARGET.bak-mondoly-$(date +%Y%m%d%H%M%S)"
-patch -p1 --forward < "$PATCH_FILE"
-
-command -v php >/dev/null && php -l "$TARGET"
-
 echo
-echo "OK. Si opcache/php-fpm est actif : systemctl reload php8.x-fpm (adapter la version)"
+echo "IMPORTANT : poser la constante INVOICE_CAN_ALWAYS_BE_REMOVED=1 (Configuration > Divers) pour activer le déblocage."
+echo "Si opcache/php-fpm est actif : systemctl reload php8.x-fpm (adapter la version)"

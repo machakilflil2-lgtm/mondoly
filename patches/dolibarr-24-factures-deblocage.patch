@@ -1,0 +1,44 @@
+--- a/core/class/commoninvoice.class.php
++++ b/core/class/commoninvoice.class.php
+@@ -778,9 +778,15 @@
+ 				}
+ 
+ 				// If printed, we refuse
++				// PATCH MURBANISME-RENT 2026-10-08 : garde desactivee a la demande du client : retour en brouillon
++				// autorise meme si la facture a deja ete telechargee/imprimee (equivalent ancienne option core
++				// INVOICE_CAN_ALWAYS_BE_REMOVED, disparue en v24). REAPPLIQUER apres chaque mise a jour de Dolibarr :
++				// rechercher "PATCH MURBANISME-RENT" dans core/class/commoninvoice.class.php.
++				/*
+ 				if ((int) $this->pos_print_counter > 0) {
+ 					return -6;
+ 				}
++				*/
+ 
+ 				include_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+ 				if (isALNERunningVersion() && !empty($this->module_source)) {
+@@ -951,9 +957,12 @@
+ 				}
+ 
+ 				// If printed, we refuse
++				// PATCH MURBANISME-RENT 2026-10-08 : garde desactivee aussi pour la suppression (miroir isEditable).
++				/*
+ 				if ((int) $this->pos_print_counter > 0) {
+ 					return -6;
+ 				}
++				*/
+ 
+ 				include_once DOL_DOCUMENT_ROOT.'/blockedlog/lib/blockedlog.lib.php';
+ 				if (isALNERunningVersion()) {
+@@ -977,9 +986,12 @@
+ 				// $maxref can be '' (means not found) if there is no invoice yet, but also if there is no invoice for the new period when there is a reset at each period
+ 
+ 				// If invoice to delete is not the last one, we refuse
++				// PATCH MURBANISME-RENT 2026-10-08 : refus desactive (ATTENTION : laisse des trous dans la numerotation).
++				/*
+ 				if ($maxref != '' && $maxref != $this->ref) {
+ 					return -2;
+ 				}
++				*/
+ 
+ 				// TODO If there is payment in bookkeeping, check the payment is not dispatched in accounting and return -2.
+ 				// ...
